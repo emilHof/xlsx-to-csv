@@ -13,10 +13,14 @@ use lambda_runtime::{run, service_fn, Error, LambdaEvent};
 async fn function_handler(event: LambdaEvent<S3Event>) -> Result<(), Error> {
     let s3_event = event.payload.records;
 
+    println!("{:?}", s3_event);
+
     let records = s3_event.last().cloned().unwrap();
     let region = records.aws_region.unwrap();
     let bucket = records.s3.bucket.name.unwrap();
     let key = records.s3.object.key.unwrap();
+
+    println!("region: {}, bucket: {}, key: {}", region, bucket, key);
 
     let region_provider
         = RegionProviderChain::first_try(Region::new(region.clone()))
